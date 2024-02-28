@@ -13,6 +13,7 @@ from xarray.backends.common import BACKEND_ENTRYPOINTS
 from xarray import Variable
 from xarray.core import indexing
 from xarray.core.utils import Frozen, FrozenDict, close_on_error
+from xarray.core.pycompat import integer_types
 from xarray.backends.common import AbstractDataStore, BackendArray, BackendEntrypoint
 
 
@@ -53,12 +54,19 @@ class EratosBackendArray(BackendArray):
                 starts.append(k.start if k.start else 0)
                 ends.append(k.stop if k.stop else default_stop)
                 strides.append(k.step if k.step else 1)
-            elif isinstance(k, int):
+            elif isinstance(k, integer_types):
                 starts.append(k)
-                ends.append(k)
-                strides.append(k)
+                ends.append(k+1)
+                strides.append(1)
 
         array = self.gdata.get_subset_as_array(self.var, starts, ends, strides)
+
+        # axis is a tuple, containing the index of each dimension selected by integer
+        axis = tuple(n for n, k in enumerate(key) if isinstance(k, integer_types))
+
+        # If the returned array hdoes not have the expected number of dimensions, then remove integer selected dimensions out.
+        if (array.ndim != self.ndim - len(axis)) and axis:
+            array = np.squeeze(array, axis)
 
         # TODO: how to properly handle missing values???
         # Currently Eratos SDK returns raw data arrays, and does not expose the missing vlaue metadata of underlying netcdf
