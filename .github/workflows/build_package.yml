@@ -1,0 +1,29 @@
+name: CD - Package Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+  workflow_dispatch:
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Build virtual env
+        run:  pip install poetry && poetry install
+
+      - name: Build package
+        run: |
+          poetry build
+          BUILD_VERSION=$(poetry version | awk '{print $2}')
+          WHEEL_PATH=$(ls dist/*.whl)
+          echo $BUILD_VERSION
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: eratos-xarray-${{ env.BUILD_VERSION }}
+          path: ${{ env.WHEEL_PATH }}
