@@ -22,8 +22,9 @@ jobs:
           BUILD_VERSION=$(poetry version | awk '{print $2}')
           WHEEL_PATH=$(ls dist/*.whl)
           echo $BUILD_VERSION
+          echo $WHEEL_PATH
 
       - uses: actions/upload-artifact@v2
         with:
-          name: eratos-xarray-${{ env.BUILD_VERSION }}
-          path: ${{ env.WHEEL_PATH }}
+          name: eratos-xarray-${BUILD_VERSION}
+          path: ${WHEEL_PATH}
