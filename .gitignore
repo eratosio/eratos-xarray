@@ -4,3 +4,4 @@ eratos.egg-info/
 *$py.class
 dist/
 .env
+.venv/
