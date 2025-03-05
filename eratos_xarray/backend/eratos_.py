@@ -121,7 +121,6 @@ class EratosDataStore(AbstractDataStore):
         if eratos_adapter:
             adapter = eratos_adapter
         elif eratos_auth:
-            print(f"ignore_certs: {ignore_certs}")
             adapter = Adapter(eratos_auth, ignore_certs=ignore_certs)
         else:
             raise ValueError("Need Eratos creds or adapter object")
