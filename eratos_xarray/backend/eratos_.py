@@ -4,10 +4,9 @@ import numpy as np
 from packaging import version
 
 from eratos.adapter import Adapter
-from eratos.creds import AccessTokenCreds
+from eratos.creds import BaseCreds
 from eratos.data import Data, GSData
 
-import xarray
 from xarray.backends import StoreBackendEntrypoint
 from xarray.backends.common import BACKEND_ENTRYPOINTS
 from xarray import Variable
@@ -15,6 +14,8 @@ from xarray.core import indexing
 from xarray.core.utils import Frozen, FrozenDict, close_on_error
 from xarray.core.pycompat import integer_types
 from xarray.backends.common import AbstractDataStore, BackendArray, BackendEntrypoint
+
+from typing import Optional
 
 
 class EratosBackendArray(BackendArray):
@@ -88,9 +89,16 @@ class EratosBackendEntrypoint(BackendEntrypoint):
         *,
         decode_times=True,
         drop_variables=None,
-        eratos_auth: AccessTokenCreds = None,
+        eratos_auth: Optional[BaseCreds] = None,
+        ignore_certs: bool = False,
+        eratos_adapter: Optional[Adapter] = None,
     ):
-        store = EratosDataStore.open(ern=filename_or_obj, eratos_auth=eratos_auth)
+        store = EratosDataStore.open(
+            ern=filename_or_obj,
+            eratos_auth=eratos_auth,
+            ignore_certs=ignore_certs,
+            eratos_adapter=eratos_adapter,
+        )
 
         store_entrypoint = StoreBackendEntrypoint()
         with close_on_error(store):
@@ -103,8 +111,19 @@ class EratosDataStore(AbstractDataStore):
         self.gsdata = gsdata
 
     @classmethod
-    def open(cls, ern, eratos_auth: AccessTokenCreds = None):
-        adapter = Adapter(eratos_auth)
+    def open(
+        cls,
+        ern,
+        eratos_auth: Optional[BaseCreds] = None,
+        ignore_certs: bool = False,
+        eratos_adapter: Optional[Adapter] = None,
+    ):
+        if eratos_adapter:
+            adapter = eratos_adapter
+        elif eratos_auth:
+            adapter = Adapter(eratos_auth, ignore_certs=ignore_certs)
+        else:
+            raise ValueError("Need Eratos creds or adapter object")
         resource = adapter.Resource(ern=ern)
         data: Data = resource.data()
         gsdata: GSData = data.gapi()
