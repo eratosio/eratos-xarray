@@ -8,6 +8,8 @@ name: CD - Release - Production
 
 on:
   workflow_dispatch:
+    groups:
+      - maintainers
 
 jobs:
   build-and-publish:
