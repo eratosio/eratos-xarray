@@ -32,7 +32,7 @@ jobs:
 
       - name: Get Version
         run: |
-          echo "BUILD_VERSION=$(hatch version)" >> $GITHUB_ENV
+          echo "BUILD_VERSION=$(poetry version | awk '{print $2}')"  >> $GITHUB_ENV
 
       - name: Build package
         run: poetry build
