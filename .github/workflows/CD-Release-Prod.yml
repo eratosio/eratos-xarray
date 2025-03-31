@@ -8,13 +8,12 @@ name: CD - Release - Production
 
 on:
   workflow_dispatch:
-    groups:
-      - maintainers
 
 jobs:
   build-and-publish:
     if: github.ref_name == 'master'
     runs-on: ubuntu-latest
+    environment: production
     permissions:
       id-token: write
       contents: write
