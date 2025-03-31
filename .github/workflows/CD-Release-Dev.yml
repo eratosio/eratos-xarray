@@ -8,7 +8,8 @@ name: CD - Release - Development
 on:
   workflow_dispatch:
 
-  build-and-push:
+jobs:
+  build-and-publish:
     runs-on: ubuntu-latest
     environment: dev
     permissions:
