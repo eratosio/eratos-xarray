@@ -7,8 +7,6 @@ name: CD - Release - Development
 # and commit to branch before running
 on:
   workflow_dispatch:
-    groups:
-      - maintainers
 
   build-and-push:
     runs-on: ubuntu-latest
