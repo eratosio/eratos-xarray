@@ -29,6 +29,7 @@ class EratosBackendArray(BackendArray):
             self.shape = self.shape + (self.all_dimensions[dim_name]["size"],)
 
         self.dtype = np.dtype(gdata.variables()[var]["dataType"])
+        self.fill_value = gdata.variables()[var]["fillValue"]
 
     def __getitem__(self, key: indexing.ExplicitIndexer) -> np.typing.ArrayLike:
         return indexing.explicit_indexing_adapter(
@@ -136,8 +137,13 @@ class EratosDataStore(AbstractDataStore):
 
         # Leverage Xarray cf time decoder as all 'time' variable responses are treated as unix time.
         attrs = {"units": "seconds since 1970-01-01 00:00:00"} if var == "time" else {}
+        fill_val = self.gsdata.variables()[var]["fillValue"]
+        encoding = None
+        if fill_val:
+            # attrs["_FillValue"] = fill_val
+            encoding = {"_FillValue": fill_val}
 
-        return Variable(dimensions, data, attrs)
+        return Variable(dimensions, data, attrs, encoding=encoding)
 
     def get_variables(self):
         return FrozenDict(
