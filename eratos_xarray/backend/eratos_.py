@@ -139,7 +139,6 @@ class EratosDataStore(AbstractDataStore):
         fill_val = self.gsdata.variables()[var].get("fillValue", None)
         encoding = None
         if fill_val:
-            # attrs["_FillValue"] = fill_val
             encoding = {"_FillValue": fill_val}
             attrs['missing_value'] = fill_val
 
