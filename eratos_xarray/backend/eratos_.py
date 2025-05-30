@@ -136,8 +136,13 @@ class EratosDataStore(AbstractDataStore):
 
         # Leverage Xarray cf time decoder as all 'time' variable responses are treated as unix time.
         attrs = {"units": "seconds since 1970-01-01 00:00:00"} if var == "time" else {}
+        fill_val = self.gsdata.variables()[var].get("fillValue", None)
+        encoding = None
+        if fill_val:
+            encoding = {"_FillValue": fill_val}
+            attrs['missing_value'] = fill_val
 
-        return Variable(dimensions, data, attrs)
+        return Variable(dimensions, data, attrs, encoding=encoding)
 
     def get_variables(self):
         return FrozenDict(
