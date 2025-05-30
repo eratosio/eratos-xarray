@@ -13,7 +13,7 @@ repository = "https://bitbucket.csiro.au/projects/SC/repos/eratos-xarray/browse"
 python = "^3.8"
 xarray = "^2023.1.0"
 numpy = "^1.20.0"
-eratos-sdk = "^0.17.0"
+eratos-sdk = ">=0.16.0,<1.0.0"
 
 [tool.poetry.plugins."xarray.backends"]
 eratos = "eratos_xarray.backend.eratos_:EratosBackendEntrypoint"
