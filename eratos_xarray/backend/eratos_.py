@@ -141,6 +141,7 @@ class EratosDataStore(AbstractDataStore):
         if fill_val:
             # attrs["_FillValue"] = fill_val
             encoding = {"_FillValue": fill_val}
+            attrs['missing_value'] = fill_val
 
         return Variable(dimensions, data, attrs, encoding=encoding)
 
