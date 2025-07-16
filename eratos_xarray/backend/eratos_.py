@@ -12,7 +12,11 @@ from xarray.backends.common import BACKEND_ENTRYPOINTS
 from xarray import Variable
 from xarray.core import indexing
 from xarray.core.utils import Frozen, FrozenDict, close_on_error
-from xarray.core.pycompat import integer_types
+
+try:
+    from xarray.core.pycompat import integer_types
+except ImportError:
+    integer_types = (int, np.integer)
 from xarray.backends.common import AbstractDataStore, BackendArray, BackendEntrypoint
 
 from typing import Optional
@@ -140,7 +144,7 @@ class EratosDataStore(AbstractDataStore):
         encoding = None
         if fill_val:
             encoding = {"_FillValue": fill_val}
-            attrs['missing_value'] = fill_val
+            attrs["missing_value"] = fill_val
 
         return Variable(dimensions, data, attrs, encoding=encoding)
 
