@@ -17,7 +17,7 @@ try:
 except ImportError:
     # throw a logging warning message to state that we have to manually set the integer types here.
     import warnings
-    warnings.warn("Using fallback definition of integer_types")
+    warnings.warn("Unable to import integer_types from `xarray.namedarray.pycompat`. Falling back to integer types defined in `eratos-xarray`, consider upgrading `xarray` to remove this warning.")
     integer_types = (int, np.integer)
 from xarray.backends.common import AbstractDataStore, BackendArray, BackendEntrypoint
 
