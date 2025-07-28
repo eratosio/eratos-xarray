@@ -12,11 +12,6 @@ from xarray.backends.common import BACKEND_ENTRYPOINTS
 from xarray import Variable
 from xarray.core import indexing
 from xarray.core.utils import Frozen, FrozenDict, close_on_error
-
-try:
-    from xarray.core.pycompat import integer_types
-except ImportError:
-    integer_types = (int, np.integer)
 from xarray.backends.common import AbstractDataStore, BackendArray, BackendEntrypoint
 
 from typing import Optional
@@ -43,6 +38,7 @@ class EratosBackendArray(BackendArray):
         )
 
     def _raw_indexing_method(self, key: tuple) -> np.typing.ArrayLike:
+        integer_types = (int, np.integer)
         starts = []
         ends = []
         strides = []
